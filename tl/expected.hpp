@@ -423,7 +423,7 @@ template <class T, class E> struct expected_storage_base<T, E, true, false> {
 // E is trivial, T is not.
 template <class T, class E> struct expected_storage_base<T, E, false, true> {
   constexpr expected_storage_base() : m_val(T{}), m_has_val(true) {}
-  constexpr expected_storage_base(no_init_t) : m_has_val(false) {}
+  constexpr expected_storage_base(no_init_t) : m_dummy{}, m_has_val(false) {}
 
   template <class... Args,
             detail::enable_if_t<std::is_constructible<T, Args &&...>::value> * =
@@ -457,6 +457,7 @@ template <class T, class E> struct expected_storage_base<T, E, false, true> {
     }
   }
   union {
+    char m_dummy;
     T m_val;
     unexpected<E> m_unexpect;
   };
